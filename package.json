@@ -1,0 +1,11 @@
+{
+  "amd": {},
+  "volo": {
+    "baseUrl": "./lib",
+    "dependencies": {
+      "require": "http://requirejs.org/docs/release/2.1.9/comments/require.js",
+      "i18n": "https://raw.github.com/requirejs/i18n/latest/i18n.js",
+      "text": "https://raw.github.com/requirejs/text/latest/text.js"
+    }
+  }
+}
