@@ -1,8 +1,8 @@
 
 requirejs.config({
-	baseUrl : '../lib',
+	baseUrl : '../src',
     map: { 
-      '*': { 'popgen': '../popgen-0.1' }
+      '*': { 'popgen': 'popgen' }
     }
 });
 
@@ -11,7 +11,7 @@ requirejs(['popgen'], function(popgen){
 	var button = document.getElementById('tehButton');
 	button.onclick = function(ev){
 		console.log('shalala');
-		var form = popgen.makeForm('form1', fields, null, null);
+		var form = new popgen.form('form1', fields, null, null);
 		console.log(form);
 	}
 
