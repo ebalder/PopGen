@@ -8,20 +8,18 @@ define(['data', 'util'], function(data, util){
 	function makeField(field, name){
 		var element;
 		var type = field.type;
+		field.name = name;
 		if(fieldType.input.indexOf(field.type) >= 0){
 			element = makeInput(field, name);
 		} 
 		else {
 			element = makeNonInput(field, type);
 		}
-		var label = field.label;
-		/* set attributes */
-		setAttributes(element, field, ['label', 'type']);
 		/* add labels if exist and group them in a span */
-		if(label){
-			element = makeLabel(element, label);
-		}
-		element.name = name;
+		var group;
+		if(field.label){
+			element = makeLabel(element, field.label);
+		} 
 		return element;
 	}
 
@@ -29,14 +27,17 @@ define(['data', 'util'], function(data, util){
 		var type = field.type;
 		var element;
 		if(type == 'list'){
-			element = makeList(field);
+			element = makeList(field, name);
+			element.onchange = onChange;
 		} 
 		else if(type == 'radio' || type == 'checkbox'){
-			element = makeRadioBox(field);
+			element = makeRadioBox(field, name);
 		}
 		else {
 			element = document.createElement('input');
+			setAttributes(element, field, ['label', 'type', 'mask']);
 			element.type = type;
+			element.onchange = onChange;
 		}
 		return element;
 	}
@@ -44,19 +45,29 @@ define(['data', 'util'], function(data, util){
 	function makeLabel(element, label){
 		var lblElement = document.createElement('label');
 		var span = document.createElement('span');
+		/* If checkbox/radiobutton */
 		span.appendChild(lblElement);
-		span.appendChild(element);
-		element = span;
+		if(element.type && ['checkbox', 'radio'].indexOf(element.type) >= 0){
+			span.insertBefore(element, lblElement);
+		}
+		else{
+			span.appendChild(element);
+		}
 		lblElement.innerHTML = label;
 		if(element.id){
 			lblElement.setAttribute('for', element.id);
 		}
 		element.label = lblElement;
-		return element;
+		return {
+			element: element,
+			label: lblElement, 
+			top: span
+		};
 	}
 
 	function makeList(field){
 		var element = document.createElement('input');
+		setAttributes(element, field, ['label', 'type', 'mask']);
 		element.setAttribute('list', field.id + '-dl');
 		var dataList = document.createElement('dataList');
 		dataList.id = field.id + '-dl';
@@ -73,6 +84,8 @@ define(['data', 'util'], function(data, util){
 
 	function makeNonInput(field, type){
 		var element = document.createElement(type);
+		setAttributes(element, field, ['label', 'type', 'mask']);
+		element.onchange = onChange;
 		if(type = 'select'){
 			var opt = field.options;
 			var curr;
@@ -88,22 +101,39 @@ define(['data', 'util'], function(data, util){
 
 	function makeRadioBox(field) {
 		var element = document.createElement('span');
-		var curr, lbl;
+		setAttributes(element, field, ['label', 'type', 'mask']);
+		var curr;
 		var opt = field.options;
 		for(var key in opt){
-			var cont = document.createElement('span');
 			curr = document.createElement('input');
-			curr.type = field.type;
-			curr.name = name;
-			curr.value = key;
-			lbl = document.createElement('label') 
-			lbl.innerHTML = opt[key];
-			lbl.setAttribute('for', field.id);
-			cont.appendChild(curr);
-			cont.appendChild(lbl);
-			element.appendChild(cont);
+			curr.onchange = onChange;
+			field.value = key;
+			field.id = field.id + '_' + key;
+			setAttributes(curr, field, ['options', 'label', 'mask']);
+			opt[key] = makeLabel(curr, opt[key]);
+			element.appendChild(opt[key].top);
 		}
+		element.options = opt;
 		return element;
+	}
+
+	function onChange(ev){
+		var element = ev.target;
+		var form = element.form;
+		if(element.type == 'checkbox'){
+			var opt = form.values[element.name] || [];
+			if(element.checked){
+				opt[opt.length-1] = element.value;
+			}
+			else{
+				opt.splice(opt.indexOf(element.value),1);
+			}
+		}
+		else{
+			form.values[element.name] = element.value;
+		}
+		console.log(form.values);
+		return false;
 	}
 
 	return function(field, name){
