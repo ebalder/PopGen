@@ -132,7 +132,6 @@ define(['data', 'util'], function(data, util){
 		else{
 			form.values[element.name] = element.value;
 		}
-		console.log(form.values);
 		return false;
 	}
 

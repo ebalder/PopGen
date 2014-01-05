@@ -19,15 +19,14 @@ requirejs(['popgen'], function(popgen){
 		id: 'testForm',
 		wrapper: 'formWrapper',
 		target: 'http://google.com',
-		method: 'POST',
 		waitResponse: true,
 		successResp: 'success!',
 		failResp: 'error',
 		timeout: 15000,
 		onResponse: 'event',
 		onError: 'event',
-		onSubmit: 'event',
 		onSuccess: 'event', 
+		onSubmit: function(){},
 		fields : {
 			'text' : {
 				type: 'text',
