@@ -1,16 +1,14 @@
 
 requirejs.config({
-	baseUrl : '../src',
-    map: { 
+    baseUrl : '../src',
+    map: {
       '*': { 'popgen': 'popgen' }
     }
 });
 
 requirejs(['popgen'], function(popgen){
-
 	var button = document.getElementById('tehButton');
 	button.onclick = function(ev){
-		console.log('shalala');
 		var form = new popgen.form(formData);
 		console.log(form);
 	}
@@ -69,9 +67,5 @@ requirejs(['popgen'], function(popgen){
 			}
 		}
 	};
-});
-
-
-
-
-
+})
+	

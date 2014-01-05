@@ -8,7 +8,7 @@
     } else {
         //Browser globals case. Just assign the
         //result to a property on the global.
-        root.libGlobalName = factory();
+        root.popgen = factory();
     }
 }(this, function () {
     //almond, and your modules will be inlined here
@@ -740,18 +740,12 @@ define('form',['data', 'util', 'popgen', 'field'], function(data, util, popgen, 
 });
 
 define('popgen',['data', 'util', 'form'], function(data, util, form){
-
-	var setAttributes = util.setAttributes;
-	var loop = util.loop;
-		
-	return {
-		form: form
-	}
+	return {form:form};
 });
 require(["popgen"]);
     //The modules for your project will be inlined above
     //this snippet. Ask almond to synchronously require the
     //module value for 'main' here and return it as the
     //value to use for the public API for the built file.
-    return require('main');
+    return require('popgen');
 }));
